@@ -5,7 +5,7 @@ import { useEffect, useState, useMemo } from "react";
 import { ClassSession } from "@/lib/schedule";
 import { ScheduleCard } from "@/components/ScheduleCard";
 import { Filters } from "@/components/Filters";
-import { Loader2, Github, Linkedin } from "lucide-react";
+import { Loader2, Github, Linkedin, Sun, Moon } from "lucide-react";
 import { LOCAL_STORAGE_KEYS } from "@/constants/localStorage";
 import { getLocalStorageItem, setLocalStorageItem } from "@/lib/localStorage";
 
@@ -26,6 +26,12 @@ const DEFAULT_FILTERS: ScheduleFilters = {
   shift: "",
   search: "",
 };
+
+type Theme = "light" | "dark";
+
+function isValidTheme(value: unknown): value is Theme {
+  return value === "light" || value === "dark";
+}
 
 function isValidScheduleFilters(value: unknown): value is ScheduleFilters {
   if (!value || typeof value !== "object") {
@@ -50,6 +56,7 @@ export default function Home() {
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
   const [filters, setFilters] = useState<ScheduleFilters>(DEFAULT_FILTERS);
   const [isFiltersHydrated, setIsFiltersHydrated] = useState(false);
+  const [theme, setTheme] = useState<Theme>("dark");
 
   useEffect(() => {
     const savedFilters = getLocalStorageItem<ScheduleFilters>(LOCAL_STORAGE_KEYS.SCHEDULE_FILTERS);
@@ -68,6 +75,36 @@ export default function Home() {
 
     setLocalStorageItem(LOCAL_STORAGE_KEYS.SCHEDULE_FILTERS, filters);
   }, [filters, isFiltersHydrated]);
+
+  useEffect(() => {
+    const savedTheme = getLocalStorageItem<Theme>(LOCAL_STORAGE_KEYS.THEME);
+
+    if (savedTheme && isValidTheme(savedTheme)) {
+      setTheme(savedTheme);
+      if (savedTheme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+      return;
+    }
+
+    document.documentElement.classList.add("dark");
+  }, []);
+
+  useEffect(() => {
+    if (!theme) {
+      return;
+    }
+
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+
+    setLocalStorageItem(LOCAL_STORAGE_KEYS.THEME, theme);
+  }, [theme]);
 
   useEffect(() => {
     async function loadData() {
@@ -108,44 +145,66 @@ export default function Home() {
   }, [schedule, filters]);
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8 font-sans">
+    <main className="min-h-screen text-foreground p-4 md:p-8 font-sans">
       <div className="max-w-7xl mx-auto">
-        <header className="mb-8 text-center md:text-left border-b border-slate-900 pb-6">
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent mb-2">
-            Centro Universitário Católica do Tocantins
-          </h1>
-          <p className="text-slate-400 text-lg">Ensalamento e Horários 2026/1</p>
-          {lastUpdated && (
-            <p className="text-xs text-blue-400 mt-2 font-mono bg-blue-950/30 inline-block px-3 py-1 rounded-full border border-blue-900/50">
-              ⚡ Atualizado: {new Date(lastUpdated).toLocaleString('pt-BR', {
-                day: '2-digit',
-                month: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit'
-              })}
-            </p>
-          )}
+        <header className="mb-8 border-b border-border pb-6">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="text-center md:text-left">
+              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent mb-2">
+                Centro Universitário Católica do Tocantins
+              </h1>
+              <p className="text-lg text-foreground">Ensalamento e Horários 2026/1</p>
+              {lastUpdated && (
+                <p className="mt-2 inline-block rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs md:text-sm font-mono text-primary dark:border-blue-900/60 dark:bg-blue-950/60 dark:text-blue-200">
+                  ⚡ Atualizado:{" "}
+                  {new Date(lastUpdated).toLocaleString("pt-BR", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </p>
+              )}
+            </div>
+
+            <label className="rocker rocker-small self-center">
+              <input
+                type="checkbox"
+                checked={theme === "dark"}
+                onChange={() => setTheme((prev) => (prev === "dark" ? "light" : "dark"))}
+                aria-label="Alternar tema claro/escuro"
+              />
+              <span className="switch-left">
+                <Moon className="h-4 w-4" />
+              </span>
+              <span className="switch-right">
+                <Sun className="h-4 w-4" />
+              </span>
+            </label>
+          </div>
         </header>
 
         {loading ? (
           <div className="flex flex-col justify-center items-center h-64 space-y-4">
             <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
-            <p className="text-slate-500">Carregando horários...</p>
+            <p className="text-foreground">Carregando horários...</p>
           </div>
         ) : (
           <>
-            <Filters schedule={schedule} filters={filters} setFilters={setFilters} />
+            <Filters schedule={schedule} filters={filters} setFilters={setFilters} theme={theme} />
 
             <div className="mb-4 flex justify-between items-center">
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-foreground">
                 <span className="hidden sm:inline">Exibindo </span>
-                <span className="font-bold text-white">{filteredSchedule.length}</span> aulas
-                {filters.course && <span className="ml-1 text-slate-600">em {filters.course}</span>}
+                <span className="font-bold text-foreground">{filteredSchedule.length}</span> aulas
+                {filters.course && (
+                  <span className="ml-1 text-foreground">em {filters.course}</span>
+                )}
               </p>
             </div>
 
             {filteredSchedule.length === 0 ? (
-              <div className="text-center py-20 text-slate-500 bg-slate-900/50 rounded-xl border border-slate-900 border-dashed">
+              <div className="text-center py-20 text-foreground bg-muted rounded-xl border border-border border-dashed">
                 <p className="text-xl">Nenhuma aula encontrada com os filtros selecionados.</p>
               </div>
             ) : (
@@ -159,16 +218,26 @@ export default function Home() {
         )}
       </div>
 
-      <footer className="mt-12 py-6 border-t border-slate-900 text-center text-slate-600 text-sm">
+      <footer className="mt-12 py-6 border-t border-border text-center text-foreground text-sm">
         <p className="flex items-center justify-center gap-2 mb-2">
-          Desenvolvido com 💙 por <strong className="text-slate-400">Leonardo Vinicius</strong>
+          Desenvolvido com 💙 por <strong className="text-foreground">Leonardo Vinicius</strong>
         </p>
         <div className="flex items-center justify-center gap-4">
-          <a href="https://github.com/leo-nardo" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors flex items-center gap-1">
+          <a
+            href="https://github.com/leo-nardo"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 transition-colors hover:text-blue-500"
+          >
             <Github className="w-4 h-4" />
             <span>GitHub</span>
           </a>
-          <a href="https://www.linkedin.com/in/leonardo-vinicius-batista-santos-396745209" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors flex items-center gap-1">
+          <a
+            href="https://www.linkedin.com/in/leonardo-vinicius-batista-santos-396745209"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 transition-colors hover:text-blue-500"
+          >
             <Linkedin className="w-4 h-4" />
             <span>LinkedIn</span>
           </a>

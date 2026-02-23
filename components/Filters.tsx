@@ -18,6 +18,7 @@ interface FiltersProps {
     schedule: ClassSession[];
     filters: FiltersState;
     setFilters: Dispatch<SetStateAction<FiltersState>>;
+    theme?: Theme;
 }
 
 type FiltersState = {
@@ -29,7 +30,30 @@ type FiltersState = {
     search: string;
 };
 
-export function Filters({ schedule, filters, setFilters }: FiltersProps) {
+type Theme = "light" | "dark";
+
+type LightClearButtonProps = {
+    onClick: () => void;
+};
+
+function LightClearButton({ onClick }: LightClearButtonProps) {
+    return (
+        <button
+            type="button"
+            onClick={onClick}
+            className="group relative w-[50px] h-[50px] rounded-full bg-[rgb(20,20,20)] border-0 font-semibold flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.164)] cursor-pointer transition-all duration-300 overflow-hidden hover:w-[140px] hover:rounded-[50px] hover:bg-[rgb(255,69,69)]"
+        >
+            <svg viewBox="0 0 448 512" className="w-3 transition-all duration-300 group-hover:w-[50px] group-hover:translate-y-[60%]">
+                <path className="fill-white" d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
+            </svg>
+            <span className="absolute -top-5 text-white transition-all duration-300 text-[2px] group-hover:text-[13px] group-hover:opacity-100 group-hover:translate-y-[30px]">
+                Limpar Filtros
+            </span>
+        </button>
+    );
+}
+
+export function Filters({ schedule, filters, setFilters, theme }: FiltersProps) {
 
     // Extract unique options from data based on current context
     const options = useMemo(() => {
@@ -85,17 +109,17 @@ export function Filters({ schedule, filters, setFilters }: FiltersProps) {
     };
 
     return (
-        <div className="bg-slate-900 border border-blue-900/50 rounded-xl p-6 mb-8 shadow-lg">
+        <div className="bg-card border border-border rounded-xl p-6 mb-8 shadow-lg">
 
             {/* Top Row: Course and Search */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div className="space-y-2">
-                    <Label htmlFor="course-filter" className="text-blue-200">Curso</Label>
+                    <Label htmlFor="course-filter" className="text-primary">Curso</Label>
                     <Select value={filters.course} onValueChange={(v) => handleChange('course', v)}>
-                        <SelectTrigger id="course-filter" className="bg-slate-950 border-blue-900 text-slate-100 focus:ring-blue-500">
+                        <SelectTrigger id="course-filter" className="bg-background border-border text-foreground focus:ring-blue-500">
                             <SelectValue placeholder="Selecione o Curso" />
                         </SelectTrigger>
-                        <SelectContent className="bg-slate-900 border-blue-900 text-slate-100">
+                        <SelectContent className="bg-popover border border-border text-popover-foreground">
                             <SelectItem value="all">Todos os Cursos</SelectItem>
                             {options.courses.map(course => (
                                 <SelectItem key={course} value={course}>{course}</SelectItem>
@@ -105,13 +129,13 @@ export function Filters({ schedule, filters, setFilters }: FiltersProps) {
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="search-filter" className="text-slate-400">Buscar (Disciplina ou Professor)</Label>
+                    <Label htmlFor="search-filter" className="text-foreground">Buscar (Disciplina ou Professor)</Label>
                     <div className="relative">
-                        <Search className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+                        <Search className="absolute left-3 top-3 h-4 w-4 text-foreground" />
                         <Input
                             id="search-filter"
                             placeholder="Digite o nome..."
-                            className="pl-9 bg-slate-950 border-slate-800 text-slate-100 focus:ring-blue-500"
+                            className="pl-9 bg-background border-border text-foreground focus:ring-blue-500"
                             value={filters.search}
                             onChange={(e) => handleChange('search', e.target.value)}
                         />
@@ -124,12 +148,12 @@ export function Filters({ schedule, filters, setFilters }: FiltersProps) {
 
                 {/* Period Filter */}
                 <div className="space-y-2">
-                    <Label htmlFor="period-filter" className="text-slate-400">Período</Label>
+                    <Label htmlFor="period-filter" className="text-foreground">Período</Label>
                     <Select value={filters.period} onValueChange={(v) => handleChange('period', v)} disabled={!filters.course && options.periods.length > 20}>
-                        <SelectTrigger id="period-filter" className="bg-slate-950 border-slate-800 text-slate-100 focus:ring-blue-500">
+                        <SelectTrigger id="period-filter" className="bg-background border-border text-foreground focus:ring-blue-500">
                             <SelectValue placeholder="Todos" />
                         </SelectTrigger>
-                        <SelectContent className="bg-slate-900 border-blue-900 text-slate-100 max-h-60">
+                        <SelectContent className="bg-popover border border-border text-popover-foreground max-h-60">
                             <SelectItem value="all">Todos</SelectItem>
                             {options.periods.map(period => (
                                 <SelectItem key={period} value={period}>{period}</SelectItem>
@@ -140,12 +164,12 @@ export function Filters({ schedule, filters, setFilters }: FiltersProps) {
 
                 {/* Shift Filter */}
                 <div className="space-y-2">
-                    <Label htmlFor="shift-filter" className="text-slate-400">Turno</Label>
+                    <Label htmlFor="shift-filter" className="text-foreground">Turno</Label>
                     <Select value={filters.shift} onValueChange={(v) => handleChange('shift', v)}>
-                        <SelectTrigger id="shift-filter" className="bg-slate-950 border-slate-800 text-slate-100 focus:ring-blue-500">
+                        <SelectTrigger id="shift-filter" className="bg-background border-border text-foreground focus:ring-blue-500">
                             <SelectValue placeholder="Todos" />
                         </SelectTrigger>
-                        <SelectContent className="bg-slate-900 border-blue-900 text-slate-100">
+                        <SelectContent className="bg-popover border border-border text-popover-foreground">
                             <SelectItem value="all">Todos</SelectItem>
                             {options.shifts.map(shift => (
                                 <SelectItem key={shift} value={shift}>{shift}</SelectItem>
@@ -156,12 +180,12 @@ export function Filters({ schedule, filters, setFilters }: FiltersProps) {
 
                 {/* Day Filter */}
                 <div className="space-y-2">
-                    <Label htmlFor="day-filter" className="text-slate-400">Dia da Semana</Label>
+                    <Label htmlFor="day-filter" className="text-foreground">Dia da Semana</Label>
                     <Select value={filters.day} onValueChange={(v) => handleChange('day', v)}>
-                        <SelectTrigger id="day-filter" className="bg-slate-950 border-slate-800 text-slate-100 focus:ring-blue-500">
+                        <SelectTrigger id="day-filter" className="bg-background border-border text-foreground focus:ring-blue-500">
                             <SelectValue placeholder="Todos" />
                         </SelectTrigger>
-                        <SelectContent className="bg-slate-900 border-blue-900 text-slate-100">
+                        <SelectContent className="bg-popover border border-border text-popover-foreground">
                             <SelectItem value="all">Todos</SelectItem>
                             {options.days.map(day => (
                                 <SelectItem key={day} value={day}>{day}</SelectItem>
@@ -171,10 +195,14 @@ export function Filters({ schedule, filters, setFilters }: FiltersProps) {
                 </div>
             </div>
 
-            <div className="mt-4 flex justify-between items-center border-t border-slate-800 pt-4">
-                <Button variant="ghost" size="sm" onClick={clearFilters} className="text-slate-400 hover:text-white hover:bg-slate-800">
-                    Limpar Filtros
-                </Button>
+            <div className="mt-4 flex justify-between items-center border-t border-border pt-4">
+                {theme === "light" ? (
+                    <LightClearButton onClick={clearFilters} />
+                ) : (
+                    <Button variant="ghost" size="sm" onClick={clearFilters} className="text-foreground hover:bg-muted">
+                        Limpar Filtros
+                    </Button>
+                )}
             </div>
         </div>
     );
