@@ -28,7 +28,7 @@ export interface ClassSession {
     frequency: string;
 }
 
-const SPREADSHEET_URL = 'https://ubecedu-my.sharepoint.com/:x:/g/personal/raimara_rodrigues_catolica-to_edu_br/IQALA5Yo0JsZSr3JBJO6Lkq7ARYkehG7oWHVfgsnM9aQaSM?download=1';
+import { SPREADSHEET_URL } from '@/constants/urls';
 
 async function downloadFile(url: string, outputPath: string): Promise<void> {
     console.log(`[Method: Fetch-in-Page] Downloading spreadsheet to ${outputPath}...`);
@@ -165,7 +165,30 @@ export async function fetchSchedule(): Promise<ClassSession[]> {
                     }
                 }
 
-                if (headerRowIndex === -1 || !colMap) return;
+                // Fallback for sheets without a header row (e.g., FARMÁCIA in 2026/2):
+                // If no header was found in the first 10 rows, attempt a positional mapping
+                // based on the standard 8-column layout: Período, Disciplina, Docente, Dia, Turma, Bloco, Andar, Sala
+                // or 7-column layout: Período, Disciplina, Docente, Dia, Turma, Bloco, Sala
+                if (headerRowIndex === -1 || !colMap) {
+                    // Check if the first data rows look like valid schedule data
+                    // (i.e., they have enough columns and the first column looks like a period marker)
+                    const sampleRow = rows.find(r => Array.isArray(r) && r.length >= 7 && r[0] && r[1] && r[2] && r[3]);
+                    if (sampleRow) {
+                        const numCols = sampleRow.length;
+                        if (numCols >= 8) {
+                            // 8-column layout: Período(0), Disciplina(1), Docente(2), Dia(3), Turma(4), Bloco(5), Andar(6), Sala(7)
+                            colMap = { period: 0, subject: 1, professor: 2, day: 3, classGroup: 4, block: 5, time: -1, room: 7 };
+                        } else {
+                            // 7-column layout: Período(0), Disciplina(1), Docente(2), Dia(3), Turma(4), Bloco(5), Sala(6)
+                            colMap = { period: 0, subject: 1, professor: 2, day: 3, classGroup: 4, block: 5, time: -1, room: 6 };
+                        }
+                        // Find the first actual data row (skip period section headers like "2° Período - Matriz 2025")
+                        headerRowIndex = -1; // will start from row 0, processing all rows as data
+                        console.log(`[Fallback] Sheet "${sheetName}" has no header row. Using positional mapping (${numCols} cols).`);
+                    } else {
+                        return;
+                    }
+                }
 
                 let lastPeriod = "";
 
