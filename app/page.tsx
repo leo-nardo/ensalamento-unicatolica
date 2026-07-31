@@ -2,10 +2,11 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import Link from "next/link";
 import { ClassSession } from "@/lib/schedule";
 import { ScheduleCard } from "@/components/ScheduleCard";
 import { Filters } from "@/components/Filters";
-import { Loader2, Github, Linkedin } from "lucide-react";
+import { Loader2, Github, Linkedin, CalendarClock, CalendarDays } from "lucide-react";
 import { LOCAL_STORAGE_KEYS } from "@/constants/localStorage";
 import { getLocalStorageItem, setLocalStorageItem } from "@/lib/localStorage";
 
@@ -16,6 +17,7 @@ type ScheduleFilters = {
   subject: string;
   shift: string;
   search: string;
+  professor: string;
 };
 
 const DEFAULT_FILTERS: ScheduleFilters = {
@@ -25,6 +27,7 @@ const DEFAULT_FILTERS: ScheduleFilters = {
   subject: "",
   shift: "",
   search: "",
+  professor: "",
 };
 
 function isValidScheduleFilters(value: unknown): value is ScheduleFilters {
@@ -40,7 +43,8 @@ function isValidScheduleFilters(value: unknown): value is ScheduleFilters {
     typeof candidate.period === "string" &&
     typeof candidate.subject === "string" &&
     typeof candidate.shift === "string" &&
-    typeof candidate.search === "string"
+    typeof candidate.search === "string" &&
+    typeof candidate.professor === "string"
   );
 }
 
@@ -97,13 +101,14 @@ export default function Home() {
       const matchesPeriod = !filters.period || s.period === filters.period;
       const matchesSubject = !filters.subject || s.subject === filters.subject;
       const matchesShift = !filters.shift || s.shift === filters.shift;
+      const matchesProfessor = !filters.professor || s.professor === filters.professor;
 
       const searchLower = filters.search.toLowerCase();
       const matchesSearch = !filters.search ||
         s.subject.toLowerCase().includes(searchLower) ||
         s.professor.toLowerCase().includes(searchLower);
 
-      return matchesCourse && matchesDay && matchesPeriod && matchesSubject && matchesShift && matchesSearch;
+      return matchesCourse && matchesDay && matchesPeriod && matchesSubject && matchesShift && matchesSearch && matchesProfessor;
     });
   }, [schedule, filters]);
 
@@ -114,7 +119,23 @@ export default function Home() {
           <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent mb-2">
             Centro Universitário Católica do Tocantins
           </h1>
-          <p className="text-slate-400 text-lg">Ensalamento e Horários 2026/1</p>
+          <p className="text-slate-400 text-lg">Ensalamento e Horários 2026/2</p>
+
+          <div className="mt-4 flex flex-wrap justify-center md:justify-start gap-3">
+            <Link
+              href="/meu-horario"
+              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-full transition-colors"
+            >
+              <CalendarClock className="w-4 h-4" /> Montar meu horário
+            </Link>
+            <Link
+              href="/calendario"
+              className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-slate-200 text-sm font-medium px-4 py-2 rounded-full border border-slate-800 transition-colors"
+            >
+              <CalendarDays className="w-4 h-4" /> Calendário acadêmico
+            </Link>
+          </div>
+
           {lastUpdated && (
             <p className="text-xs text-blue-400 mt-2 font-mono bg-blue-950/30 inline-block px-3 py-1 rounded-full border border-blue-900/50">
               ⚡ Atualizado: {new Date(lastUpdated).toLocaleString('pt-BR', {

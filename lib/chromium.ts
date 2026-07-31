@@ -25,7 +25,7 @@ export async function getBrowser() {
         try {
             const { executablePath } = require('puppeteer');
             browser = await puppeteer.launch({
-                args: ['--no-sandbox', '--disable-setuid-sandbox'],
+                args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-web-security'],
                 defaultViewport: { width: 1920, height: 1080 },
                 headless: true,
                 executablePath: executablePath(),
@@ -34,7 +34,8 @@ export async function getBrowser() {
             console.warn("Could not load local puppeteer executable. Trying default lookup...");
             browser = await puppeteer.launch({
                 channel: 'chrome',
-                headless: true
+                headless: true,
+                args: ['--disable-web-security'],
             });
         }
     }

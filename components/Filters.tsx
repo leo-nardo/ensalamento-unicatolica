@@ -27,6 +27,7 @@ type FiltersState = {
     subject: string;
     shift: string;
     search: string;
+    professor: string;
 };
 
 export function Filters({ schedule, filters, setFilters }: FiltersProps) {
@@ -42,6 +43,7 @@ export function Filters({ schedule, filters, setFilters }: FiltersProps) {
         const periods = Array.from(new Set(relevantSchedule.map(s => s.period).filter(p => p && p.toLowerCase() !== 'período'))).sort();
         // const subjects = Array.from(new Set(relevantSchedule.map(s => s.subject).filter(s => s && s.toLowerCase() !== 'disciplina'))).sort();
         const shifts = Array.from(new Set(relevantSchedule.map(s => s.shift).filter(Boolean))).sort();
+        const professors = Array.from(new Set(relevantSchedule.map(s => s.professor).filter(Boolean))).sort();
 
         // Custom Sort for Days
         const dayOrder = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
@@ -59,7 +61,7 @@ export function Filters({ schedule, filters, setFilters }: FiltersProps) {
             return (indexA === -1 ? 99 : indexA) - (indexB === -1 ? 99 : indexB);
         });
 
-        return { courses, days: sortedDays, periods, shifts: sortedShifts };
+        return { courses, days: sortedDays, periods, shifts: sortedShifts, professors };
     }, [schedule, filters.course]);
 
     const handleChange = (key: keyof FiltersState, value: string) => {
@@ -73,7 +75,8 @@ export function Filters({ schedule, filters, setFilters }: FiltersProps) {
                 period: '',
                 subject: '',
                 shift: '',
-                search: ''
+                search: '',
+                professor: '',
             });
         } else {
             setFilters((prev) => ({ ...prev, [key]: finalValue }));
@@ -81,7 +84,7 @@ export function Filters({ schedule, filters, setFilters }: FiltersProps) {
     };
 
     const clearFilters = () => {
-        setFilters({ course: '', day: '', period: '', subject: '', shift: '', search: '' });
+        setFilters({ course: '', day: '', period: '', subject: '', shift: '', search: '', professor: '' });
     };
 
     return (
@@ -120,7 +123,7 @@ export function Filters({ schedule, filters, setFilters }: FiltersProps) {
             </div>
 
             {/* Bottom Row: Secondary Filters */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
 
                 {/* Period Filter */}
                 <div className="space-y-2">
@@ -165,6 +168,22 @@ export function Filters({ schedule, filters, setFilters }: FiltersProps) {
                             <SelectItem value="all">Todos</SelectItem>
                             {options.days.map(day => (
                                 <SelectItem key={day} value={day}>{day}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                {/* Professor Filter */}
+                <div className="space-y-2">
+                    <Label htmlFor="professor-filter" className="text-slate-400">Professor</Label>
+                    <Select value={filters.professor} onValueChange={(v) => handleChange('professor', v)}>
+                        <SelectTrigger id="professor-filter" className="bg-slate-950 border-slate-800 text-slate-100 focus:ring-blue-500">
+                            <SelectValue placeholder="Todos" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-900 border-blue-900 text-slate-100 max-h-60">
+                            <SelectItem value="all">Todos</SelectItem>
+                            {options.professors.map(professor => (
+                                <SelectItem key={professor} value={professor}>{professor}</SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
