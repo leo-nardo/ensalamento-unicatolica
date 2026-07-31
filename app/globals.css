@@ -1,38 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* UniCatólica design tokens */
+    --uc-bg: #0a0918;
+    --uc-bg2: #100e24;
+    --uc-surface: #171432;
+    --uc-surface2: #1f1b40;
+    --uc-border: rgba(255, 255, 255, 0.08);
+    --uc-border-strong: rgba(139, 92, 246, 0.4);
+    --uc-purple: #8b5cf6;
+    --uc-purple-deep: #4c2f8f;
+    --uc-blue: #38bdf8;
+    --uc-cyan: #22d3ee;
+    --uc-text-hi: #f5f3fb;
+    --uc-text-mid: #b3aecb;
+    --uc-text-low: #7a7495;
+    --uc-green: #34d399;
+    --uc-amber: #f59e0b;
+    --uc-orange: #fb923c;
+    --uc-rose: #fb7185;
+    --uc-slate: #94a3b8;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    /* shadcn/ui CSS variables (remapped to UC palette) */
+    --background: 248 50% 6%;      /* #0a0918 */
+    --foreground: 260 80% 97%;     /* #f5f3fb */
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --card: 252 48% 13%;           /* #171432 */
+    --card-foreground: 260 80% 97%;
 
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --popover: 252 46% 10%;        /* #100e24 */
+    --popover-foreground: 260 80% 97%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --primary: 262 83% 58%;        /* #8b5cf6 */
+    --primary-foreground: 260 80% 97%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --secondary: 256 48% 17%;      /* #1f1b40 */
+    --secondary-foreground: 260 80% 97%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --muted: 256 48% 17%;
+    --muted-foreground: 258 20% 68%;  /* #b3aecb */
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --accent: 256 48% 17%;
+    --accent-foreground: 260 80% 97%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --destructive: 350 65% 50%;
+    --destructive-foreground: 260 80% 97%;
 
-    --radius: 0.5rem;
+    --border: 256 20% 16%;
+    --input: 256 20% 16%;
+    --ring: 262 83% 58%;
+
+    --radius: 0.75rem;
   }
 }
 
@@ -43,5 +66,22 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
   }
+}
+
+/* Scrollbar styling for the dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--uc-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--uc-surface2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--uc-purple-deep);
 }

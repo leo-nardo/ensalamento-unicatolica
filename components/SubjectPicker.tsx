@@ -1,4 +1,3 @@
-
 import { ClassSession } from '@/lib/schedule';
 import { buildScheduleKey } from '@/lib/scheduleKey';
 import { ScheduleCard } from '@/components/ScheduleCard';
@@ -32,7 +31,7 @@ export function SubjectPicker({ schedule, filteredSchedule, filters, setFilters,
             <Filters schedule={schedule} filters={filters} setFilters={setFilters} />
 
             {filteredSchedule.length === 0 ? (
-                <div className="text-center py-20 text-slate-500 bg-slate-900/50 rounded-xl border border-slate-900 border-dashed">
+                <div className="text-center py-20 text-[var(--uc-text-low)] bg-[var(--uc-surface)]/50 rounded-xl border border-[var(--uc-border)] border-dashed">
                     <p className="text-xl">Nenhuma aula encontrada com os filtros selecionados.</p>
                 </div>
             ) : (
@@ -49,8 +48,8 @@ export function SubjectPicker({ schedule, filteredSchedule, filters, setFilters,
                                     onClick={() => onToggle(key)}
                                     className={
                                         isSelected
-                                            ? 'absolute top-3 right-3 bg-emerald-600 hover:bg-emerald-700 text-white'
-                                            : 'absolute top-3 right-3 bg-blue-600 hover:bg-blue-700 text-white'
+                                            ? 'absolute top-3 right-3 bg-[var(--uc-green)] hover:bg-[var(--uc-green)]/80 text-[var(--uc-bg)]'
+                                            : 'absolute top-3 right-3 bg-[var(--uc-purple)] hover:bg-[var(--uc-purple-deep)] text-white'
                                     }
                                 >
                                     {isSelected ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
