@@ -34,10 +34,10 @@ export function WeeklyScheduleGrid({ sessions }: WeeklyScheduleGridProps) {
     }
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-x-6 gap-y-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
             {byDay.map(({ day, sessions: daySessions }) => (
-                <div key={day} className="xl:border-l xl:border-[var(--uc-border)] xl:first:border-l-0 xl:pl-6 xl:first:pl-0">
-                    <h3 className="text-[var(--uc-purple)] font-bold uppercase tracking-wide text-xs mb-3 pb-2 border-b border-[var(--uc-border)]">{day}</h3>
+                <div key={day} className="flex flex-col">
+                    <h3 className="text-[var(--uc-purple)] font-bold uppercase tracking-wide text-xs mb-4 pb-2 border-b border-[var(--uc-border)]">{day}</h3>
                     {daySessions.length === 0 ? (
                         <p className="text-[var(--uc-text-low)] text-xs italic">Sem aulas</p>
                     ) : (
