@@ -2,6 +2,7 @@ import { CalendarDays } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { NavBar } from "@/components/NavBar";
 import { getAllEvents, getUpcomingEvents, type AcademicEvent, type AcademicEventType } from "@/lib/academicCalendar";
+import { Footer } from "@/components/Footer";
 
 const TYPE_LABELS: Record<AcademicEventType, string> = {
     inicio: "Início",
@@ -114,6 +115,7 @@ export default function CalendarioPage() {
                     )}
                 </div>
             </main>
+            <Footer />
         </>
     );
 }

@@ -8,6 +8,7 @@ import { encodeSelection, decodeSelection } from "@/lib/shareLink";
 import { SubjectPicker } from "@/components/SubjectPicker";
 import { WeeklyScheduleGrid } from "@/components/WeeklyScheduleGrid";
 import { NavBar } from "@/components/NavBar";
+import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { LOCAL_STORAGE_KEYS } from "@/constants/localStorage";
 import { getLocalStorageItem, setLocalStorageItem } from "@/lib/localStorage";
@@ -215,6 +216,7 @@ function MeuHorarioContent() {
                     </div>
                 )}
             </main>
+            <Footer />
         </>
     );
 }

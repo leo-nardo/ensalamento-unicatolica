@@ -5,7 +5,8 @@ import { ClassSession } from "@/lib/schedule";
 import { ScheduleCard } from "@/components/ScheduleCard";
 import { Filters } from "@/components/Filters";
 import { NavBar } from "@/components/NavBar";
-import { Loader2, Github, Linkedin } from "lucide-react";
+import { Footer } from "@/components/Footer";
+import { Loader2 } from "lucide-react";
 import { LOCAL_STORAGE_KEYS } from "@/constants/localStorage";
 import { getLocalStorageItem, setLocalStorageItem } from "@/lib/localStorage";
 
@@ -166,22 +167,8 @@ export default function Home() {
           )}
         </div>
 
-        <footer className="mt-12 py-6 border-t border-[var(--uc-border)] text-center text-[var(--uc-text-low)] text-sm">
-          <p className="flex items-center justify-center gap-2 mb-2">
-            Desenvolvido com 💜 por <strong className="text-[var(--uc-text-mid)]">Leonardo Vinicius</strong>
-          </p>
-          <div className="flex items-center justify-center gap-4">
-            <a href="https://github.com/leo-nardo" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--uc-purple)] transition-colors flex items-center gap-1">
-              <Github className="w-4 h-4" />
-              <span>GitHub</span>
-            </a>
-            <a href="https://www.linkedin.com/in/leonardo-vinicius-batista-santos-396745209" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--uc-purple)] transition-colors flex items-center gap-1">
-              <Linkedin className="w-4 h-4" />
-              <span>LinkedIn</span>
-            </a>
-          </div>
-        </footer>
       </main>
+      <Footer />
     </>
   );
 }

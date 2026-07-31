@@ -28,7 +28,7 @@ export interface ClassSession {
     frequency: string;
 }
 
-const SPREADSHEET_URL = 'https://ubecedu-my.sharepoint.com/:x:/g/personal/raimara_rodrigues_catolica-to_edu_br/IQBLNfGL0WE2RbJkwjy8EcguAR9C6kMxn4aK_UiXL3kKB3k?download=1';
+import { SPREADSHEET_URL } from '@/constants/urls';
 
 async function downloadFile(url: string, outputPath: string): Promise<void> {
     console.log(`[Method: Fetch-in-Page] Downloading spreadsheet to ${outputPath}...`);

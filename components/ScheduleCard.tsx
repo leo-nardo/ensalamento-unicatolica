@@ -1,10 +1,23 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, MapPin, Building, Calendar, User } from "lucide-react";
 import { ClassSession } from "@/lib/schedule";
+import type { ReactNode } from "react";
 
 interface ScheduleCardProps {
     session: ClassSession;
+    /** Optional action rendered as a full-width footer inside the card (e.g. "Adicionar ao meu horário") */
+    footer?: ReactNode;
+}
+
+/** "2º" -> "2º Período". Leaves already-descriptive values (e.g. "Institucional") untouched. */
+function formatPeriod(period: string) {
+    const trimmed = period.trim();
+    if (/^\d+[ºo°]?$/i.test(trimmed)) {
+        const normalized = trimmed.replace(/[o°]$/i, "º").replace(/^(\d+)$/, "$1º");
+        return `${normalized} Período`;
+    }
+    return trimmed;
 }
 
 /** Maps shift → left-border color */
@@ -23,7 +36,7 @@ const SHIFT_BADGE: Record<string, string> = {
     "Integral": "bg-[var(--uc-cyan)]/15 text-[var(--uc-cyan)] border-[var(--uc-cyan)]/30",
 };
 
-export function ScheduleCard({ session }: ScheduleCardProps) {
+export function ScheduleCard({ session, footer }: ScheduleCardProps) {
     const borderClass = SHIFT_BORDER[session.shift] || "border-l-[var(--uc-purple)]";
     const badgeClass = SHIFT_BADGE[session.shift] || "bg-[var(--uc-purple)]/15 text-[var(--uc-purple)] border-[var(--uc-purple)]/30";
 
@@ -42,8 +55,8 @@ export function ScheduleCard({ session }: ScheduleCardProps) {
                                 </Badge>
                             )}
                             {session.period && (
-                                <Badge variant="outline" className="text-[10px] bg-[var(--uc-surface2)] text-[var(--uc-text-mid)] border-[var(--uc-border)]">
-                                    {session.period}
+                                <Badge variant="outline" className="text-[10px] bg-[var(--uc-surface2)] text-[var(--uc-text-mid)] border-[var(--uc-border)] whitespace-nowrap">
+                                    {formatPeriod(session.period)}
                                 </Badge>
                             )}
                         </div>
@@ -98,6 +111,7 @@ export function ScheduleCard({ session }: ScheduleCardProps) {
                     </div>
                 </div>
             </CardContent>
+            {footer && <CardFooter className="pt-1">{footer}</CardFooter>}
         </Card>
     );
 }

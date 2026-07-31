@@ -41,20 +41,26 @@ export function SubjectPicker({ schedule, filteredSchedule, filters, setFilters,
                         const isSelected = selectedKeys.includes(key);
 
                         return (
-                            <div key={session.id} className="relative">
-                                <ScheduleCard session={session} />
-                                <Button
-                                    size="sm"
-                                    onClick={() => onToggle(key)}
-                                    className={
-                                        isSelected
-                                            ? 'absolute top-3 right-3 bg-[var(--uc-green)] hover:bg-[var(--uc-green)]/80 text-[var(--uc-bg)]'
-                                            : 'absolute top-3 right-3 bg-[var(--uc-purple)] hover:bg-[var(--uc-purple-deep)] text-white'
-                                    }
-                                >
-                                    {isSelected ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-                                </Button>
-                            </div>
+                            <ScheduleCard
+                                key={session.id}
+                                session={session}
+                                footer={
+                                    <Button
+                                        onClick={() => onToggle(key)}
+                                        className={
+                                            isSelected
+                                                ? 'w-full bg-[var(--uc-green)]/15 hover:bg-[var(--uc-green)]/25 text-[var(--uc-green)] border border-[var(--uc-green)]/30'
+                                                : 'w-full bg-[var(--uc-purple)] hover:bg-[var(--uc-purple-deep)] text-white'
+                                        }
+                                    >
+                                        {isSelected ? (
+                                            <><Check className="w-4 h-4 mr-2" /> Adicionada — Remover</>
+                                        ) : (
+                                            <><Plus className="w-4 h-4 mr-2" /> Adicionar ao meu horário</>
+                                        )}
+                                    </Button>
+                                }
+                            />
                         );
                     })}
                 </div>

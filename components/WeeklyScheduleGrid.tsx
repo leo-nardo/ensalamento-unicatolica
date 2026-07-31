@@ -34,14 +34,14 @@ export function WeeklyScheduleGrid({ sessions }: WeeklyScheduleGridProps) {
     }
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-x-6 gap-y-8">
             {byDay.map(({ day, sessions: daySessions }) => (
-                <div key={day} className="bg-[var(--uc-surface)] border border-[var(--uc-border)] rounded-xl p-4 min-h-[120px]">
-                    <h3 className="text-[var(--uc-purple)] font-bold uppercase tracking-wide text-sm mb-3">{day}</h3>
+                <div key={day} className="xl:border-l xl:border-[var(--uc-border)] xl:first:border-l-0 xl:pl-6 xl:first:pl-0">
+                    <h3 className="text-[var(--uc-purple)] font-bold uppercase tracking-wide text-xs mb-3 pb-2 border-b border-[var(--uc-border)]">{day}</h3>
                     {daySessions.length === 0 ? (
                         <p className="text-[var(--uc-text-low)] text-xs italic">Sem aulas</p>
                     ) : (
-                        <div className="space-y-3">
+                        <div className="space-y-4">
                             {daySessions.map(session => {
                                 const borderClass = SHIFT_BORDER[session.shift] || "border-l-[var(--uc-purple)]";
                                 return (
@@ -50,23 +50,23 @@ export function WeeklyScheduleGrid({ sessions }: WeeklyScheduleGridProps) {
                                         <p className="text-[10px] text-[var(--uc-purple)] uppercase tracking-wide">{session.course}</p>
 
                                         <div className="flex items-center gap-2 text-[var(--uc-text-mid)] text-xs pt-1">
-                                            <Clock className="w-3.5 h-3.5 text-[var(--uc-text-low)]" />
+                                            <Clock className="w-3.5 h-3.5 text-[var(--uc-text-low)] shrink-0" />
                                             <span>{session.time || session.shift}</span>
                                             {session.frequency && <span className="text-[var(--uc-amber)]">({session.frequency})</span>}
                                         </div>
 
                                         <div className="flex items-center gap-2 text-[var(--uc-text-mid)] text-xs">
-                                            <User className="w-3.5 h-3.5 text-[var(--uc-text-low)]" />
+                                            <User className="w-3.5 h-3.5 text-[var(--uc-text-low)] shrink-0" />
                                             <span>{session.professor}</span>
                                         </div>
 
                                         <div className="flex items-center gap-2 text-[var(--uc-text-mid)] text-xs">
-                                            <Building className="w-3.5 h-3.5 text-[var(--uc-text-low)]" />
+                                            <Building className="w-3.5 h-3.5 text-[var(--uc-text-low)] shrink-0" />
                                             <span>{session.campus || "Campus I"}</span>
                                         </div>
 
                                         <div className="flex items-center gap-2 text-[var(--uc-text-mid)] text-xs">
-                                            <MapPin className="w-3.5 h-3.5 text-[var(--uc-text-low)]" />
+                                            <MapPin className="w-3.5 h-3.5 text-[var(--uc-text-low)] shrink-0" />
                                             <span>
                                                 {session.block && session.block !== "-" ? `Bloco ${session.block} - ` : ""}
                                                 Sala {session.room}
