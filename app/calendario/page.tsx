@@ -1,8 +1,12 @@
-import { CalendarDays } from "lucide-react";
+"use client";
+
+import { useMemo, useState } from "react";
+import { CalendarDays, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { NavBar } from "@/components/NavBar";
 import { getAllEvents, getUpcomingEvents, type AcademicEvent, type AcademicEventType } from "@/lib/academicCalendar";
-import { Footer } from "@/components/Footer";
+import { CreditBadge } from "@/components/CreditBadge";
 
 const TYPE_LABELS: Record<AcademicEventType, string> = {
     inicio: "Início",
@@ -10,6 +14,8 @@ const TYPE_LABELS: Record<AcademicEventType, string> = {
     feriado: "Feriado",
     prova: "Prova",
     importante: "Importante",
+    reposicao: "Reposição",
+    prazo: "Prazo",
 };
 
 const TYPE_STYLES: Record<AcademicEventType, string> = {
@@ -18,6 +24,8 @@ const TYPE_STYLES: Record<AcademicEventType, string> = {
     feriado: "bg-[var(--uc-amber)]/15 text-[var(--uc-amber)] border-[var(--uc-amber)]/30",
     prova: "bg-[var(--uc-rose)]/15 text-[var(--uc-rose)] border-[var(--uc-rose)]/30",
     importante: "bg-[var(--uc-blue)]/15 text-[var(--uc-blue)] border-[var(--uc-blue)]/30",
+    reposicao: "bg-[var(--uc-cyan)]/15 text-[var(--uc-cyan)] border-[var(--uc-cyan)]/30",
+    prazo: "bg-[var(--uc-orange)]/15 text-[var(--uc-orange)] border-[var(--uc-orange)]/30",
 };
 
 const MONTH_NAMES = [
@@ -28,6 +36,10 @@ const MONTH_NAMES = [
 function formatDate(date: string) {
     const [year, month, day] = date.split('-').map(Number);
     return `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
+}
+
+function normalize(text: string) {
+    return text.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 }
 
 function groupByMonth(events: AcademicEvent[]) {
@@ -47,9 +59,19 @@ function groupByMonth(events: AcademicEvent[]) {
 }
 
 export default function CalendarioPage() {
-    const allEvents = getAllEvents();
-    const upcoming = getUpcomingEvents(3);
-    const monthGroups = groupByMonth(allEvents);
+    const [search, setSearch] = useState('');
+    const allEvents = useMemo(() => getAllEvents(), []);
+    const upcoming = useMemo(() => getUpcomingEvents(3), []);
+
+    const filteredEvents = useMemo(() => {
+        if (!search.trim()) return allEvents;
+        const query = normalize(search);
+        return allEvents.filter(event =>
+            normalize(event.label).includes(query) || normalize(TYPE_LABELS[event.type]).includes(query)
+        );
+    }, [allEvents, search]);
+
+    const monthGroups = useMemo(() => groupByMonth(filteredEvents), [filteredEvents]);
 
     return (
         <>
@@ -60,7 +82,7 @@ export default function CalendarioPage() {
                         <h1 className="text-3xl md:text-4xl font-extrabold text-[var(--uc-text-hi)] mb-2">
                             Calendário Acadêmico
                         </h1>
-                        <p className="text-[var(--uc-text-mid)]">Datas importantes do semestre: feriados, provas e mais.</p>
+                        <p className="text-[var(--uc-text-mid)]">Datas importantes do semestre: feriados, provas, reposições, prazos e mais.</p>
                     </header>
 
                     {allEvents.length === 0 ? (
@@ -88,34 +110,50 @@ export default function CalendarioPage() {
                                 </section>
                             )}
 
-                            <section className="space-y-8">
-                                {monthGroups.map(group => (
-                                    <div key={group.label}>
-                                        <h2 className="text-lg font-semibold text-[var(--uc-text-mid)] mb-3">{group.label}</h2>
-                                        <div className="space-y-2">
-                                            {group.events.map(event => (
-                                                <div
-                                                    key={`${event.date}-${event.label}`}
-                                                    className="flex items-center justify-between gap-4 bg-[var(--uc-surface)]/50 border border-[var(--uc-border)] rounded-lg px-4 py-3 hover:border-[var(--uc-border-strong)] transition-all duration-200"
-                                                >
-                                                    <div className="flex items-center gap-4">
-                                                        <span className="font-mono text-[var(--uc-text-low)] text-sm w-24">{formatDate(event.date)}</span>
-                                                        <span className="text-[var(--uc-text-hi)]">{event.label}</span>
+                            <div className="relative mb-6">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--uc-text-low)]" />
+                                <Input
+                                    placeholder="Buscar no calendário (ex: feriado, reposição, matrícula...)"
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    className="pl-9 bg-[var(--uc-surface)] border-[var(--uc-border)] text-[var(--uc-text-hi)] focus-visible:ring-[var(--uc-purple)]"
+                                />
+                            </div>
+
+                            {filteredEvents.length === 0 ? (
+                                <div className="text-center py-16 text-[var(--uc-text-low)] bg-[var(--uc-surface)]/50 rounded-xl border border-[var(--uc-border)] border-dashed">
+                                    <p>Nenhum evento encontrado para &quot;{search}&quot;.</p>
+                                </div>
+                            ) : (
+                                <section className="space-y-8">
+                                    {monthGroups.map(group => (
+                                        <div key={group.label}>
+                                            <h2 className="text-lg font-semibold text-[var(--uc-text-mid)] mb-3">{group.label}</h2>
+                                            <div className="space-y-2">
+                                                {group.events.map(event => (
+                                                    <div
+                                                        key={`${event.date}-${event.label}`}
+                                                        className="flex items-center justify-between gap-4 bg-[var(--uc-surface)]/50 border border-[var(--uc-border)] rounded-lg px-4 py-3 hover:border-[var(--uc-border-strong)] transition-all duration-200"
+                                                    >
+                                                        <div className="flex items-center gap-4">
+                                                            <span className="font-mono text-[var(--uc-text-low)] text-sm w-24 shrink-0">{formatDate(event.date)}</span>
+                                                            <span className="text-[var(--uc-text-hi)]">{event.label}</span>
+                                                        </div>
+                                                        <Badge variant="outline" className={`shrink-0 ${TYPE_STYLES[event.type]}`}>
+                                                            {TYPE_LABELS[event.type]}
+                                                        </Badge>
                                                     </div>
-                                                    <Badge variant="outline" className={TYPE_STYLES[event.type]}>
-                                                        {TYPE_LABELS[event.type]}
-                                                    </Badge>
-                                                </div>
-                                            ))}
+                                                ))}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
-                            </section>
+                                    ))}
+                                </section>
+                            )}
                         </>
                     )}
                 </div>
             </main>
-            <Footer />
+            <CreditBadge />
         </>
     );
 }

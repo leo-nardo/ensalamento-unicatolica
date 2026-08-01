@@ -13,6 +13,11 @@ import { fetchSchedule } from '../lib/schedule';
 
 const CACHE_FILE = path.resolve(process.cwd(), 'schedule_cache.xlsx');
 
+type ColMap = {
+    period: number; subject: number; professor: number; day: number;
+    room: number; block: number; time: number; classGroup: number;
+};
+
 function toTitleCase(str: string) {
     const lower = str.toLowerCase();
     const exceptions = ['de', 'da', 'do', 'dos', 'das', 'e', 'em', 'na', 'no', 'para', 'por'];
@@ -45,7 +50,7 @@ async function main() {
 
     workbook.SheetNames.forEach(sheetName => {
         const sheet = workbook.Sheets[sheetName];
-        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, defval: '' }) as any[][];
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, defval: '' }) as string[][];
 
         if (!rows || rows.length < 1) {
             console.log(`[${sheetName}] VAZIA — 0 linhas`);
@@ -54,7 +59,7 @@ async function main() {
 
         // Replicate header detection from lib/schedule.ts
         let headerRowIndex = -1;
-        let colMap: any = null;
+        let colMap: ColMap | null = null;
 
         for (let r = 0; r < Math.min(10, rows.length); r++) {
             const rowObj = rows[r];
@@ -193,7 +198,6 @@ async function main() {
     Object.entries(perSheetCandidateCount).forEach(([sheetName, candidateCount]) => {
         const courseName = toTitleCase(sheetName.trim());
         const parsedCount = parsedPerCourse[courseName] || 0;
-        const expectedParsed = candidateCount; // candidates minus those dropped for day are expected to equal parsed count only if none dropped
         const droppedForThisSheet = droppedDetails.filter(d => d.sheet === sheetName).length;
         const expectedAfterDayDrop = candidateCount - droppedForThisSheet;
         const status = parsedCount === expectedAfterDayDrop ? 'OK' : '❌ DIVERGÊNCIA';

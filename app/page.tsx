@@ -5,7 +5,7 @@ import { ClassSession } from "@/lib/schedule";
 import { ScheduleCard } from "@/components/ScheduleCard";
 import { Filters } from "@/components/Filters";
 import { NavBar } from "@/components/NavBar";
-import { Footer } from "@/components/Footer";
+import { CreditBadge } from "@/components/CreditBadge";
 import { Loader2 } from "lucide-react";
 import { LOCAL_STORAGE_KEYS } from "@/constants/localStorage";
 import { getLocalStorageItem, setLocalStorageItem } from "@/lib/localStorage";
@@ -168,7 +168,7 @@ export default function Home() {
         </div>
 
       </main>
-      <Footer />
+      <CreditBadge />
     </>
   );
 }

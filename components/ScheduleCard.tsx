@@ -1,6 +1,6 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock, MapPin, Building, Calendar, User } from "lucide-react";
+import { MapPin, Building, Calendar, User } from "lucide-react";
 import { ClassSession } from "@/lib/schedule";
 import type { ReactNode } from "react";
 

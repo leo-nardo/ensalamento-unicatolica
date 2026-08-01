@@ -8,7 +8,7 @@ import { encodeSelection, decodeSelection } from "@/lib/shareLink";
 import { SubjectPicker } from "@/components/SubjectPicker";
 import { WeeklyScheduleGrid } from "@/components/WeeklyScheduleGrid";
 import { NavBar } from "@/components/NavBar";
-import { Footer } from "@/components/Footer";
+import { CreditBadge } from "@/components/CreditBadge";
 import { Button } from "@/components/ui/button";
 import { LOCAL_STORAGE_KEYS } from "@/constants/localStorage";
 import { getLocalStorageItem, setLocalStorageItem } from "@/lib/localStorage";
@@ -190,7 +190,7 @@ function MeuHorarioContent() {
                                             );
                                         })}
                                     </ul>
-                                    <p className="text-[var(--uc-amber)]/60 text-xs mt-2">Pode ter sido renomeada, removida ou trocada de turma. Clique em "Editar minhas matérias" para ajustar.</p>
+                                    <p className="text-[var(--uc-amber)]/60 text-xs mt-2">Pode ter sido renomeada, removida ou trocada de turma. Clique em &quot;Editar minhas matérias&quot; para ajustar.</p>
                                 </div>
                             )}
 
@@ -216,7 +216,7 @@ function MeuHorarioContent() {
                     </div>
                 )}
             </main>
-            <Footer />
+            <CreditBadge />
         </>
     );
 }
