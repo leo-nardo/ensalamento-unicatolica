@@ -1,6 +1,6 @@
 import calendarData from '@/data/academic-calendar.json';
 
-export type AcademicEventType = 'inicio' | 'fim' | 'feriado' | 'prova' | 'importante';
+export type AcademicEventType = 'inicio' | 'fim' | 'feriado' | 'prova' | 'importante' | 'reposicao' | 'prazo';
 
 export interface AcademicEvent {
     date: string; // ISO date, e.g. "2026-08-10"

@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { SPREADSHEET_VIEW_URL } from "@/constants/urls";
+import { ExternalLink } from "lucide-react";
 
 const NAV_ITEMS = [
     { label: "Início", href: "/" },
@@ -46,6 +48,14 @@ export function NavBar() {
                                 {item.label}
                             </Link>
                         ))}
+                        <a
+                            href={SPREADSHEET_VIEW_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hidden md:inline-flex items-center gap-1.5 ml-2 pl-3 border-l border-[var(--uc-border)] text-xs text-[var(--uc-text-low)] hover:text-[var(--uc-purple)] transition-colors"
+                        >
+                            <ExternalLink className="w-3.5 h-3.5" /> Planilha original
+                        </a>
                     </div>
                 </div>
             </div>
