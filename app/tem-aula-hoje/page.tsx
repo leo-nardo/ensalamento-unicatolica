@@ -121,9 +121,7 @@ export default function TemAulaHojePage() {
                         <>
                             <p className="text-[var(--uc-text-low)] mb-3 first-letter:uppercase">{formatToday(new Date())}</p>
                             <h1 className="text-2xl md:text-3xl font-extrabold mb-10 leading-snug">
-                                Ó jovem, cessa tua angústia,
-                                <br /> pois o destino de tua aula hoje já está traçado nos astros.
-                                <br /> Ousa apertar o botão e descobre tua sina.
+                                Tem aula normal hoje?
                             </h1>
                             <button
                                 onClick={handleCheck}
